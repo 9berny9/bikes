@@ -31,10 +31,11 @@ def stations_description(data, data_station):
     station_names = data_station.name.drop_duplicates()
     st.markdown(f"#### Select station for more info: ")
     station = st.selectbox(f"Select station", station_names)
-    station_info(data, data_station, station)
+    station_info(data_station, station)
+    station_statistic(data, station)
 
 
-def station_info(data, data_station, station):
+def station_info(data_station, station):
     if station:
         selected_df = data_station[
             data_station.name == station
@@ -51,6 +52,12 @@ def station_info(data, data_station, station):
                                  unsafe_allow_html=True)
                         st.write(f"- Latitude: {lat}")
                         st.write(f"- Longitude: {lon}")
+
+
+def station_statistic(data, station):
+    if station:
+        st.markdown("#### Station statistics:")
+        selected_df = data[data.start_station_name == station]
 
 
 def run_app():
