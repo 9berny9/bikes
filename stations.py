@@ -10,12 +10,27 @@ def load_data():
 
 
 def stations_description(data, data_station):
+
     st.title("Bikes in Edinburgh")
     st.write(f"We have {len(data_station.index)} bike stations in Edinburgh.")
     st.map(data_station)
+    df_best = data.groupby("start_station_name").count().sort_values(by="index", ascending=False).reset_index()
+    col1, col2 = st.columns(2)
+    col1.markdown(f"#### The most frequent station are:")
+    for i, value in enumerate(df_best.head(5).start_station_name):
+        for n in range(len(df_best)):
+            if i == n:
+                col1.write(f"{n+1}. {value}")
+
+    col2.markdown(f"#### The least frequent station are:")
+    for i, value in enumerate(df_best.tail(5).start_station_name):
+        for n in range(len(df_best)):
+            if i == n:
+                col2.write(f"{n+1}. {value}")
+
     station_names = data_station.name.drop_duplicates()
-    station = st.selectbox(f"Select your station for more info:",
-                           station_names)
+    st.markdown(f"#### Select station for more info: ")
+    station = st.selectbox(f"Select station", station_names)
     station_info(data, data_station, station)
 
 
@@ -27,7 +42,7 @@ def station_info(data, data_station, station):
         if len(selected_df.index) > 1:
             st.markdown(f"Selected station has {len(selected_df.index)} "
                         f"habitats")
-        st.markdown("### Station info:")
+        st.markdown("#### Station info:")
         for i, value in enumerate(selected_df.description):
             for n, lat in enumerate(selected_df.lat):
                 for o, lon in enumerate(selected_df.lon):
